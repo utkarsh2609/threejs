@@ -8,23 +8,47 @@ import gsap from 'gsap'
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene()
-
-/**
- * Base
- */
-const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+const scene = new THREE.Scene();
 
 /**
  * Sizes
  */
 const sizes = {
-    width: 800,
-    height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
 }
+
+// Lights
+const ambientLight = new THREE.AmbientLight(0x1d2430, 1);
+scene.add(ambientLight)
+
+/**
+ * Clouds
+ */
+let clouds = [];
+const textureLoader = new THREE.TextureLoader();
+const cloudTexture = textureLoader.load('images/cloud.png');
+
+const planeGeometry = new THREE.PlaneGeometry(2,2);
+const cloudMaterial = new THREE.MeshLambertMaterial({
+    map: cloudTexture,
+    transparent: true,
+    opacity: 1,
+});
+
+for(let i=0; i<10; i++) {
+    let cloud = new THREE.Mesh(planeGeometry, cloudMaterial);
+    cloud.scale.x = cloud.scale.y = Math.random() * 4;
+    cloud.position.x = (Math.random() * 10) - 5;
+    cloud.position.y = (Math.random() * 4) - 3;
+    clouds.push(cloud);
+
+}
+
+scene.add(...clouds)
+
+
+
 
 /**
  * Camera
@@ -44,7 +68,7 @@ renderer.setSize(sizes.width, sizes.height)
 /**
  * Animate
  */
-gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 })
+// gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 })
 
 const tick = () =>
 {

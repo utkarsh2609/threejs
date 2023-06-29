@@ -45,7 +45,13 @@ for(let i=0; i<10; i++) {
 
 }
 
-scene.add(...clouds)
+scene.add(...clouds);
+
+// Lightening and Thunder
+const flashLight = new THREE.PointLight(0x7df9ff, 0.5);
+// flashLight.position.x = -5;
+flashLight.position.z = 1;
+scene.add(flashLight)
 
 
 
@@ -74,6 +80,11 @@ const tick = () =>
 {
     // Render
     renderer.render(scene, camera)
+
+    // Update intensity of flash
+    let power = Math.random();
+    flashLight.power = power > 0.98 ? Math.random()*10 : 0;
+    flashLight.position.x = Math.random() * 10 - 5
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)

@@ -1,5 +1,9 @@
 import * as THREE from 'three'
 import gsap from 'gsap'
+import { Water } from 'three/examples/jsm/objects/Water.js';
+import { Sky } from 'three/addons/objects/Sky.js';
+
+let water;
 
 /**
  * Base
@@ -10,20 +14,13 @@ const canvas = document.querySelector('canvas.webgl')
 // Scene
 const scene = new THREE.Scene()
 
-/**
- * Base
- */
-const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
 
 /**
  * Sizes
  */
 const sizes = {
-    width: 800,
-    height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
 }
 
 /**
@@ -44,15 +41,50 @@ renderer.setSize(sizes.width, sizes.height)
 /**
  * Animate
  */
-gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 })
+// gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 })
+
+// const ambientLight = new THREE.AmbientLight(0x1d2430, 1);
+// scene.add(ambientLight)
+
+function createOcean() {
+    // Water
+
+    const waterGeometry = new THREE.PlaneGeometry( 100, 100 );
+
+    water = new Water(
+        waterGeometry,
+        {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: new THREE.TextureLoader().load( 'waternormals.jpg', function ( texture ) {
+
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+            } ),
+            sunDirection: new THREE.Vector3(),
+            sunColor: 0xffffff,
+            waterColor: 0x001e0f,
+            distortionScale: 3.7,
+            fog: scene.fog !== undefined
+        }
+    );
+
+    water.rotation.x = - Math.PI / 2;
+  water.position.y = -2;
+
+
+    scene.add( water );
+}
 
 const tick = () =>
 {
     // Render
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
 
+createOcean();
 tick()

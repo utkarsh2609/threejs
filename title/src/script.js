@@ -15,6 +15,8 @@ const scene = new THREE.Scene();
 // Textures
 const textureLoader = new THREE.TextureLoader();
 const specTexture = textureLoader.load("Ice_001/Ice_001_SPEC.jpg");
+// const specTexture = textureLoader.load("black_stone/2.jpeg");
+
 
 /**
  * Text
